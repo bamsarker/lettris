@@ -50,18 +50,25 @@ export default class {
     return this.layout.filter(offset => this.coord.x + offset.x >= 10).length === 0
   }
 
-  update({ time }, cursors) {
+  update({ time }, cursors, canMoveDown, createNewTetramino) {
     if (this.previousUpdate === undefined) this.previousUpdate = time.time
 
     if (time.time > this.previousUpdate + this.updateDelay) {
-      this.coord.y += 1
-      this.previousUpdate = time.time
+      if (canMoveDown(this)) {
+        this.coord.y += 1
+        this.previousUpdate = time.time
+      } else {
+        createNewTetramino(this)
+      }
     }
 
     if (cursors.left.justDown && this.canMoveLeft()) {
       this.coord.x -= 1
     } else if (cursors.right.justDown && this.canMoveRight()) {
       this.coord.x += 1
+    }
+    if (cursors.down.justDown && canMoveDown(this)) {
+      this.coord.y += 1
     }
 
     if (cursors.up.justDown) {
