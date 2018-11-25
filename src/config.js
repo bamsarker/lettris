@@ -12,7 +12,7 @@ export default {
   grid: {
     position: {
       x: 400,
-      y: 20
+      y: 50
     },
     tileSize: {
       width: 36,

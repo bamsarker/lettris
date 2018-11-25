@@ -22,6 +22,26 @@ export default class {
     this.previousUpdate = undefined
   }
 
+  removeBlockAtCoord(coord) {
+    this.layoutAsCoords().forEach((c, i) => {
+      if (c.x !== coord.x || c.y !== coord.y) return;
+      this.tiles[i].remove();
+      this.tiles[i].destroyed = true
+      this.layout[i].destroyed = true
+    })
+    this.tiles = this.tiles.filter(t => !t.destroyed)
+    this.layout = this.layout.filter(l => !l.destroyed)
+  }
+
+  layoutAsCoords() {
+    return this.layout.map(offset => {
+      return {
+        x: this.coord.x + offset.x,
+        y: this.coord.y + offset.y
+      }
+    })
+  }
+
   setLayout(index, poseIndex) {
     this.layout = tetraminoes.shapes[index].poses[poseIndex].map(arrayToCoord)
   }
@@ -46,7 +66,7 @@ export default class {
   }
 
   canMoveRight() {
-    return this.layout.filter(offset => this.coord.x + offset.x >= 10).length === 0
+    return this.layout.filter(offset => this.coord.x + offset.x >= config.grid.width - 1).length === 0
   }
 
   update({ time }, cursors, canMoveDown, createNewTetramino) {
@@ -66,7 +86,7 @@ export default class {
     } else if (cursors.right.justDown && this.canMoveRight()) {
       this.coord.x += 1
     }
-    if (cursors.down.justDown && canMoveDown(this)) {
+    if (cursors.down.isDown && canMoveDown(this)) {
       this.coord.y += 1
     }
 

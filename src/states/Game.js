@@ -5,6 +5,8 @@ import Grid from '../classes/Grid'
 import lang from '../lang'
 import Tetramino from '../sprites/Tetramino'
 import { randomTIndex } from '../tetraminoes'
+import { range, delay } from '../utils'
+import config from '../config'
 
 export default class extends Phaser.State {
   init() {}
@@ -77,8 +79,9 @@ export default class extends Phaser.State {
 
   tetraminoIsAtTheBottom(tetramino) {
     return (
-      tetramino.layout.filter(coord => coord.y + tetramino.coord.y === 20)
-        .length > 0
+      tetramino
+        .layoutAsCoords()
+        .filter(coord => coord.y === config.grid.height - 1).length > 0
     )
   }
 
@@ -109,6 +112,45 @@ export default class extends Phaser.State {
       createTile: this.createTile.bind(this),
       shapeIndex: randomTIndex()
     })
+    this.checkForWordsAndRows()
+  }
+
+  checkForWordsAndRows() {
+    let coords = []
+    this.placedTetraminoes.map(t => {
+      coords = [...coords, ...t.layoutAsCoords()]
+    })
+    this.checkForRows(coords)
+  }
+
+  checkForRows(coords) {
+    range(config.grid.height)
+      .map(i => i + 1)
+      .forEach(y => {
+        const coordsOnRow = coords.filter(c => c.y === y)
+        if (coordsOnRow.length < config.grid.width) return
+
+        coordsOnRow.map(c => this.removeBlockAtCoord(c))
+      })
+  }
+
+  tetIncludesCoord(tet, coord) {
+    return tet
+      .layoutAsCoords()
+      .map(c => JSON.stringify(c))
+      .includes(JSON.stringify(coord))
+  }
+
+  removeBlockAtCoord(coord) {
+    this.placedTetraminoes
+      .filter(t => this.tetIncludesCoord(t, coord))
+      .forEach(t => {
+        delay(this.removalDelay()).then(() => t.removeBlockAtCoord(coord))
+      })
+  }
+
+  removalDelay() {
+    return Math.floor(Math.random() * 150)
   }
 
   update(game) {

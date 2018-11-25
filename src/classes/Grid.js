@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import config from '../config'
+import { range } from '../utils';
 
 export const coordToPosition = coord => {
   return {
@@ -10,8 +11,8 @@ export const coordToPosition = coord => {
 
 export default class {
   constructor({ createBackgroundTile }) {
-    Phaser.ArrayUtils.numberArray(config.grid.width).map(x => {
-      Phaser.ArrayUtils.numberArray(config.grid.height).map(y => {
+    range(config.grid.width).map(x => {
+      range(config.grid.height).map(y => {
         createBackgroundTile(coordToPosition({ x, y }))
       })
     })
