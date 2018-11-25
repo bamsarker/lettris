@@ -3,3 +3,7 @@ export const centerGameObjects = (objects) => {
     object.anchor.setTo(0.5)
   })
 }
+
+export const range = (max) => [...Array(max).keys()]
+
+export const delay = (time) => new Promise((resolve) => setTimeout(resolve, time))
