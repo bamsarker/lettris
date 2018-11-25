@@ -101,7 +101,7 @@ export default class extends Phaser.State {
     )
   }
 
-  createNewTetramino(previousTetramino) {
+  replaceActiveTetWithNewTet(previousTetramino) {
     this.placedTetraminoes.push(this.activeTetramino)
     this.activeTetramino = new Tetramino({
       x: 5,
@@ -116,7 +116,7 @@ export default class extends Phaser.State {
       game,
       this.cursors,
       this.tetraminoCanMoveDown.bind(this),
-      this.createNewTetramino.bind(this)
+      this.replaceActiveTetWithNewTet.bind(this)
     )
   }
 
