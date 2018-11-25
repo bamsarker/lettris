@@ -11,11 +11,13 @@ export default class extends Phaser.Sprite {
     this.scale.set(0.275)
     this.alpha = alpha || 1
     this.game = game
+    this.letterValue = letter
   }
 
   remove() {
-    this.game.add.tween(this.scale)
+    this.removalTween = this.game.add.tween(this.scale)
       .to({x: 0, y: 0}, 200, Phaser.Easing.Back.In, true)
+    this.removalTween.onComplete.add(() => this.destroy())
   }
 
   update () {

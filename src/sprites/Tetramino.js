@@ -22,10 +22,19 @@ export default class {
     this.previousUpdate = undefined
   }
 
+  getLetters() {
+    return this.tiles.map(t => t.letterValue)
+  }
+
+  getCoordsTilesAndLetters() {
+    const letters = this.getLetters()
+    return this.layoutAsCoords().map((coord, i) => Object.assign(coord, { letter: letters[i], tile: this.tiles[i] }))
+  }
+
   removeBlockAtCoord(coord) {
     this.layoutAsCoords().forEach((c, i) => {
-      if (c.x !== coord.x || c.y !== coord.y) return;
-      this.tiles[i].remove();
+      if (c.x !== coord.x || c.y !== coord.y) return
+      this.tiles[i].remove()
       this.tiles[i].destroyed = true
       this.layout[i].destroyed = true
     })
@@ -56,17 +65,23 @@ export default class {
         x: this.coord.x + this.layout[i].x,
         y: this.coord.y + this.layout[i].y
       })
-      tile.position.x = position.x 
-      tile.position.y = position.y 
+      tile.position.x = position.x
+      tile.position.y = position.y
     })
   }
 
   canMoveLeft() {
-    return this.layout.filter(offset => this.coord.x + offset.x <= 0).length === 0
+    return (
+      this.layout.filter(offset => this.coord.x + offset.x <= 0).length === 0
+    )
   }
 
   canMoveRight() {
-    return this.layout.filter(offset => this.coord.x + offset.x >= config.grid.width - 1).length === 0
+    return (
+      this.layout.filter(
+        offset => this.coord.x + offset.x >= config.grid.width - 1
+      ).length === 0
+    )
   }
 
   update({ time }, cursors, canMoveDown, createNewTetramino) {

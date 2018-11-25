@@ -1,7 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import Tile from '../sprites/Tile'
-import Grid from '../classes/Grid'
+import Grid, { checkForWords, emptyGrid } from '../classes/Grid'
 import lang from '../lang'
 import Tetramino from '../sprites/Tetramino'
 import { randomTIndex } from '../tetraminoes'
@@ -116,22 +116,14 @@ export default class extends Phaser.State {
   }
 
   checkForWordsAndRows() {
-    let coords = []
-    this.placedTetraminoes.map(t => {
-      coords = [...coords, ...t.layoutAsCoords()]
+
+    const coordsToRemove = checkForWords(
+      this.placedTetraminoes
+    )
+
+    coordsToRemove.forEach((c, i) => {
+      this.removeBlockAtCoord(c, i * 30)
     })
-    this.checkForRows(coords)
-  }
-
-  checkForRows(coords) {
-    range(config.grid.height)
-      .map(i => i + 1)
-      .forEach(y => {
-        const coordsOnRow = coords.filter(c => c.y === y)
-        if (coordsOnRow.length < config.grid.width) return
-
-        coordsOnRow.map(c => this.removeBlockAtCoord(c))
-      })
   }
 
   tetIncludesCoord(tet, coord) {
@@ -141,15 +133,15 @@ export default class extends Phaser.State {
       .includes(JSON.stringify(coord))
   }
 
-  removeBlockAtCoord(coord) {
+  removeBlockAtCoord(coord, removalDelay) {
     this.placedTetraminoes
       .filter(t => this.tetIncludesCoord(t, coord))
       .forEach(t => {
-        delay(this.removalDelay()).then(() => t.removeBlockAtCoord(coord))
+        delay(removalDelay == undefined ? this.randomDelay() : removalDelay).then(() => t.removeBlockAtCoord(coord))
       })
   }
 
-  removalDelay() {
+  randomDelay() {
     return Math.floor(Math.random() * 150)
   }
 
