@@ -23,7 +23,6 @@ export default class {
   }
 
   setLayout(index, poseIndex) {
-    console.log(index, poseIndex)
     this.layout = tetraminoes.shapes[index].poses[poseIndex].map(arrayToCoord)
   }
 
