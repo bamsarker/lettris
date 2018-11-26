@@ -87,22 +87,37 @@ export default class extends Phaser.State {
     )
   }
 
-  tetraminoWouldOverlap(tetramino) {
+  tetraminoWouldOverlap(tetramino, offset) {
     return (
       tetramino.layout
         .map(coord => ({
-          x: coord.x + tetramino.coord.x,
-          y: coord.y + tetramino.coord.y + 1
+          x: coord.x + tetramino.coord.x + offset.x,
+          y: coord.y + tetramino.coord.y + offset.y
         }))
         .filter(this.coordOverlapsWithAnyOtherTet(this.placedTetraminoes))
         .length > 0
     )
   }
 
+  tetraminoCanMoveLeft(tetramino) {
+    return (
+      tetramino.layout.filter(offset => tetramino.coord.x + offset.x <= 0)
+        .length === 0 && !this.tetraminoWouldOverlap(tetramino, { x: -1, y: 0 })
+    )
+  }
+
+  tetraminoCanMoveRight(tetramino) {
+    return (
+      tetramino.layout.filter(
+        offset => tetramino.coord.x + offset.x >= config.grid.width - 1
+      ).length === 0 && !this.tetraminoWouldOverlap(tetramino, { x: 1, y: 0 })
+    )
+  }
+
   tetraminoCanMoveDown(tetramino) {
     return !(
       this.tetraminoIsAtTheBottom(tetramino) ||
-      this.tetraminoWouldOverlap(tetramino)
+      this.tetraminoWouldOverlap(tetramino, { x: 0, y: 1 })
     )
   }
 
@@ -110,7 +125,7 @@ export default class extends Phaser.State {
     const wordResult = new WordResult({
       game: this.game,
       x: 195,
-      y: (this.wordResults.length * 50) + 200,
+      y: this.wordResults.length * 50 + 200,
       word: word.toUpperCase(),
       asset: 'tile'
     })
@@ -121,9 +136,9 @@ export default class extends Phaser.State {
       const wr = this.wordResults.pop()
       wr.destroy()
     }
-    
+
     this.wordResults.forEach((wr, i) => {
-        wr.dropTo((i * 50) + 200)
+      wr.dropTo(i * 50 + 200)
     })
   }
 
@@ -139,7 +154,6 @@ export default class extends Phaser.State {
   }
 
   checkForWordsAndRows() {
-
     const coordsToRemove = checkForWords(
       this.placedTetraminoes,
       this.createWordResult.bind(this)
@@ -161,7 +175,9 @@ export default class extends Phaser.State {
     this.placedTetraminoes
       .filter(t => this.tetIncludesCoord(t, coord))
       .forEach(t => {
-        delay(removalDelay == undefined ? this.randomDelay() : removalDelay).then(() => t.removeBlockAtCoord(coord))
+        delay(
+          removalDelay == undefined ? this.randomDelay() : removalDelay
+        ).then(() => t.removeBlockAtCoord(coord))
       })
   }
 
@@ -173,7 +189,11 @@ export default class extends Phaser.State {
     this.activeTetramino.update(
       game,
       this.cursors,
-      this.tetraminoCanMoveDown.bind(this),
+      {
+        canMoveDown: this.tetraminoCanMoveDown.bind(this),
+        canMoveLeft: this.tetraminoCanMoveLeft.bind(this),
+        canMoveRight: this.tetraminoCanMoveRight.bind(this)
+      },
       this.replaceActiveTetWithNewTet.bind(this)
     )
   }

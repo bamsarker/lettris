@@ -70,21 +70,7 @@ export default class {
     })
   }
 
-  canMoveLeft() {
-    return (
-      this.layout.filter(offset => this.coord.x + offset.x <= 0).length === 0
-    )
-  }
-
-  canMoveRight() {
-    return (
-      this.layout.filter(
-        offset => this.coord.x + offset.x >= config.grid.width - 1
-      ).length === 0
-    )
-  }
-
-  update({ time }, cursors, canMoveDown, createNewTetramino) {
+  update({ time }, cursors, { canMoveLeft, canMoveRight, canMoveDown }, createNewTetramino) {
     if (this.previousUpdate === undefined) this.previousUpdate = time.time
 
     if (time.time > this.previousUpdate + this.updateDelay) {
@@ -96,9 +82,9 @@ export default class {
       }
     }
 
-    if (cursors.left.justDown && this.canMoveLeft()) {
+    if (cursors.left.justDown && canMoveLeft(this)) {
       this.coord.x -= 1
-    } else if (cursors.right.justDown && this.canMoveRight()) {
+    } else if (cursors.right.justDown && canMoveRight(this)) {
       this.coord.x += 1
     }
     if (cursors.down.isDown && canMoveDown(this)) {
