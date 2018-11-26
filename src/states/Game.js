@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import Tile from '../sprites/Tile'
 import WordResult from '../sprites/WordResult'
+import GameOver from '../sprites/GameOver'
 import Grid, { checkForWords, emptyGrid } from '../classes/Grid'
 import lang from '../lang'
 import Tetramino from '../sprites/Tetramino'
@@ -151,6 +152,32 @@ export default class extends Phaser.State {
       shapeIndex: randomTIndex()
     })
     this.checkForWordsAndRows()
+    this.checkForGameOver()
+  }
+
+  checkForGameOver() {
+    const allTileCoords = this.placedTetraminoes
+      .map(t => {
+        return t.layoutAsCoords()
+      })
+      .flat()
+      .filter(coord => coord.y === 0)
+
+    if (allTileCoords.length > 0) {
+      console.log('GAME OVER')
+      this.gameOver()
+    }
+  }
+
+  gameOver() {
+    this.gameOverMessage = new GameOver({
+      game: this.game,
+      x: config.gameWidth - 230,
+      y: config.gameHeight / 2,
+      asset: 'gameOverBg'
+    })
+    this.gameOverMessage.enter()
+    this.game.add.existing(this.gameOverMessage)
   }
 
   checkForWordsAndRows() {
@@ -186,6 +213,8 @@ export default class extends Phaser.State {
   }
 
   update(game) {
+    if (!!this.gameOverMessage) return;
+
     this.activeTetramino.update(
       game,
       this.cursors,

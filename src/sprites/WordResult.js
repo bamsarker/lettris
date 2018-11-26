@@ -24,7 +24,7 @@ export default class extends Phaser.Text {
   dropTo(y) {
     this.moveTween = this.game.add
       .tween(this)
-      .to({  y }, 200, Phaser.Easing.Back.InOut, true)
+      .to({ y }, 300, Phaser.Easing.Back.InOut, true)
   }
 
   update() {}
