@@ -1,6 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import Tile from '../sprites/Tile'
+import WordResult from '../sprites/WordResult'
 import Grid, { checkForWords, emptyGrid } from '../classes/Grid'
 import lang from '../lang'
 import Tetramino from '../sprites/Tetramino'
@@ -43,6 +44,7 @@ export default class extends Phaser.State {
 
   create() {
     this.placedTetraminoes = []
+    this.wordResults = []
 
     this.cursors = game.input.keyboard.createCursorKeys()
 
@@ -104,6 +106,27 @@ export default class extends Phaser.State {
     )
   }
 
+  createWordResult(word) {
+    const wordResult = new WordResult({
+      game: this.game,
+      x: 195,
+      y: (this.wordResults.length * 50) + 200,
+      word: word.toUpperCase(),
+      asset: 'tile'
+    })
+    wordResult.enter()
+    this.game.add.existing(wordResult)
+    this.wordResults.unshift(wordResult)
+    if (this.wordResults.length > 5) {
+      const wr = this.wordResults.pop()
+      wr.destroy()
+    }
+    
+    this.wordResults.forEach((wr, i) => {
+        wr.dropTo((i * 50) + 200)
+    })
+  }
+
   replaceActiveTetWithNewTet(previousTetramino) {
     this.placedTetraminoes.push(this.activeTetramino)
     this.activeTetramino = new Tetramino({
@@ -118,7 +141,8 @@ export default class extends Phaser.State {
   checkForWordsAndRows() {
 
     const coordsToRemove = checkForWords(
-      this.placedTetraminoes
+      this.placedTetraminoes,
+      this.createWordResult.bind(this)
     )
 
     coordsToRemove.forEach((c, i) => {

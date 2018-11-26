@@ -38,7 +38,7 @@ export const checkForRows = placedTetraminoes => {
   return coordsToRemove
 }
 
-export const checkForWords = placedTetraminoes => {
+export const checkForWords = (placedTetraminoes, createWordResult) => {
   let grid = emptyGrid()
 
   let coordsTilesAndLetters = placedTetraminoes
@@ -83,6 +83,7 @@ export const checkForWords = placedTetraminoes => {
     if (!found) return
     
     console.log(found)
+    createWordResult(found)
 
     const index = joined.indexOf(found)
 
