@@ -2,11 +2,11 @@ export default {
   gameWidth: 1200,
   gameHeight: 800,
   localStorageName: 'lettris',
-  webfonts: ['Cabin'],
-  backgroundColor: 0x123123,
+  webfonts: ['Cabin:700'],
+  backgroundColor: 0x273f64,
   tileLetterConfig: {
     font: '100px Cabin',
-    fill: '#FFFFFF',
+    fill: '#644e27',
     smoothed: true
   },
   grid: {

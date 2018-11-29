@@ -9,10 +9,11 @@ import Tetramino from '../sprites/Tetramino'
 import { randomTIndex } from '../tetraminoes'
 import { range, delay } from '../utils'
 import config from '../config'
+import Points from '../sprites/Points';
 
 export default class extends Phaser.State {
-  init() {}
-  preload() {}
+  init() { }
+  preload() { }
 
   createTile(pos, letter) {
     const tile = new Tile({
@@ -28,14 +29,15 @@ export default class extends Phaser.State {
     return tile
   }
 
-  createBackgroundTile(pos) {
+  createBackgroundTile(pos, i) {
+    console.log(i, i % 2)
     const tile = new Tile({
       game: this.game,
       x: pos.x,
       y: pos.y,
-      asset: 'tile',
+      asset: 'bgTile',
       letter: '',
-      alpha: 0.2
+      alpha: i % 2 ? 0.7 : 0.5
     })
 
     this.game.add.existing(tile)
@@ -48,6 +50,14 @@ export default class extends Phaser.State {
     this.wordResults = []
 
     this.cursors = game.input.keyboard.createCursorKeys()
+
+    this.points = new Points({
+      game: this.game,
+      x: 195,
+      y: config.gameHeight - 100,
+      asset: 'tile'
+    })
+    this.game.add.existing(this.points)
 
     let banner = this.add.text(180, 80, 'LETTRIS', {
       font: '80px Cabin',
@@ -122,7 +132,12 @@ export default class extends Phaser.State {
     )
   }
 
+  collectPoints(word) {
+    word.split('').forEach(this.points.collectLetter.bind(this.points))
+  }
+
   createWordResult(word) {
+    this.collectPoints(word)
     const wordResult = new WordResult({
       game: this.game,
       x: 195,

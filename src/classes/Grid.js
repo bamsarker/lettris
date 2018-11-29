@@ -81,7 +81,7 @@ export const checkForWords = (placedTetraminoes, createWordResult) => {
       .toLowerCase()
     const found = allFoundWords.find(w => joined.includes(w))
     if (!found) return
-    
+
     console.log(found)
     createWordResult(found)
 
@@ -99,10 +99,10 @@ export default class {
   constructor({ createBackgroundTile }) {
     range(config.grid.width).map(x => {
       range(config.grid.height).map(y => {
-        createBackgroundTile(coordToPosition({ x, y }))
+        createBackgroundTile(coordToPosition({ x, y }), x)
       })
     })
   }
 
-  update() {}
+  update() { }
 }
