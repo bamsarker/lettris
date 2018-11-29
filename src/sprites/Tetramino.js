@@ -32,6 +32,19 @@ export default class {
     )
   }
 
+  enter() {
+    return Promise.all(
+      this.tiles
+        .concat()
+        .sort((a, b) => a.x - b.x + (a.y - b.y))
+        .map(t => {
+          t.scale.set(0)
+          return t
+        })
+        .map((t, i) => delay(i * 50).then(() => t.enter()))
+    )
+  }
+
   getLetters() {
     return this.tiles.map(t => t.letterValue)
   }

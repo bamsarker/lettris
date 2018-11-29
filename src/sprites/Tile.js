@@ -48,5 +48,14 @@ export default class extends Phaser.Sprite {
     this.removalTween.onComplete.add(() => this.destroy())
   }
 
+  enter() {
+    return new Promise(resolve =>
+      this.game.add
+        .tween(this.scale)
+        .to({ x: 0.275, y: 0.275 }, 200, Phaser.Easing.Back.Out, true)
+        .onComplete.add(resolve)
+    )
+  }
+
   update() {}
 }

@@ -68,6 +68,7 @@ export default class extends Phaser.State {
       createTile: this.createTile.bind(this),
       shapeIndex: randomTIndex()
     })
+    this.activeTetramino.enter()
   }
 
   coordOverlapsWithAnyOtherTet(tets) {
@@ -155,6 +156,7 @@ export default class extends Phaser.State {
           createTile: this.createTile.bind(this),
           shapeIndex: randomTIndex()
         })
+        this.activeTetramino.enter()
         this.checkForWordsAndRows()
         this.checkForGameOver()
       })
