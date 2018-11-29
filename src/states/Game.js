@@ -145,14 +145,19 @@ export default class extends Phaser.State {
 
   replaceActiveTetWithNewTet(previousTetramino) {
     this.placedTetraminoes.push(this.activeTetramino)
-    this.activeTetramino = new Tetramino({
-      x: 5,
-      y: 1,
-      createTile: this.createTile.bind(this),
-      shapeIndex: randomTIndex()
-    })
-    this.checkForWordsAndRows()
-    this.checkForGameOver()
+    const currentlyActive = this.activeTetramino
+    this.activeTetramino = undefined
+    currentlyActive.pulse()
+      .then(() => {
+        this.activeTetramino = new Tetramino({
+          x: 5,
+          y: 1,
+          createTile: this.createTile.bind(this),
+          shapeIndex: randomTIndex()
+        })
+        this.checkForWordsAndRows()
+        this.checkForGameOver()
+      })
   }
 
   checkForGameOver() {
@@ -187,7 +192,7 @@ export default class extends Phaser.State {
     )
 
     coordsToRemove.forEach((c, i) => {
-      this.removeBlockAtCoord(c, i * 30)
+      this.removeBlockAtCoord(c, i * 50)
     })
   }
 
@@ -214,6 +219,7 @@ export default class extends Phaser.State {
 
   update(game) {
     if (!!this.gameOverMessage) return;
+    if (!this.activeTetramino) return;
 
     this.activeTetramino.update(
       game,
