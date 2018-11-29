@@ -9,6 +9,7 @@ import Tetramino from '../sprites/Tetramino'
 import { randomTIndex } from '../tetraminoes'
 import { range, delay } from '../utils'
 import config from '../config'
+import BackgroundFXTile from '../sprites/BackgroundFXTile';
 
 export default class extends Phaser.State {
   init() {}
@@ -43,7 +44,40 @@ export default class extends Phaser.State {
     return tile
   }
 
+  createFXTiles() {
+    range(10)
+      .forEach(i => {
+        const fxTile = new BackgroundFXTile(
+          {
+            game: this.game,
+            x: 0,
+            y: 0
+          }
+        )
+
+        this.game.add.existing(fxTile)
+
+        delay(Math.floor(Math.random() * 4000))
+          .then(() => fxTile.loop())
+      })
+  }
+
   create() {
+
+    this.createFXTiles()
+
+    let bgRect = new Phaser.Graphics(this.game)
+    bgRect.beginFill(config.backgroundColor);
+    bgRect.drawRect(
+      config.grid.position.x - config.grid.tileSize.width / 2, 
+      config.grid.position.y - config.grid.tileSize.height / 2, 
+      config.grid.width * config.grid.tileSize.width, 
+      config.grid.height * config.grid.tileSize.height
+    );
+    bgRect.endFill();
+
+    this.game.add.existing(bgRect)
+
     this.placedTetraminoes = []
     this.wordResults = []
 
@@ -57,6 +91,8 @@ export default class extends Phaser.State {
 
     banner.padding.set(10, 16)
     banner.anchor.setTo(0.5)
+
+    let arrowImg = this.add.sprite(config.gameWidth - 410, config.gameHeight / 2, 'arrowKeys')
 
     this.grid = new Grid({
       createBackgroundTile: this.createBackgroundTile.bind(this)
