@@ -103,7 +103,8 @@ export default class extends Phaser.State {
     })
     this.game.add.existing(this.points)
 
-    let arrowImg = this.add.sprite(config.gameWidth - 410, config.gameHeight / 2, 'arrowKeys')
+    let arrowImg = this.add.sprite(config.gameWidth - 380, config.gameHeight - 230, 'arrowKeys')
+    arrowImg.scale.set(0.8)
 
     this.grid = new Grid({
       createBackgroundTile: this.createBackgroundTile.bind(this)
