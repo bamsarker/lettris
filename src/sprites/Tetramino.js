@@ -3,6 +3,7 @@ import config from '../config'
 import tetraminoes, { arrayToCoord } from '../tetraminoes'
 import { coordToPosition } from '../classes/Grid'
 import { randomLetter } from '../letters'
+import { delay } from '../utils'
 
 export default class {
   constructor({ x, y, createTile, shapeIndex }) {
@@ -22,13 +23,37 @@ export default class {
     this.previousUpdate = undefined
   }
 
+  pulse() {
+    return Promise.all(
+      this.tiles
+        .concat()
+        .sort((a, b) => a.x - b.x + (a.y - b.y))
+        .map((t, i) => delay(i * 50).then(() => t.pulse()))
+    )
+  }
+
+  enter() {
+    return Promise.all(
+      this.tiles
+        .concat()
+        .sort((a, b) => a.x - b.x + (a.y - b.y))
+        .map(t => {
+          t.scale.set(0)
+          return t
+        })
+        .map((t, i) => delay(i * 50).then(() => t.enter()))
+    )
+  }
+
   getLetters() {
     return this.tiles.map(t => t.letterValue)
   }
 
   getCoordsTilesAndLetters() {
     const letters = this.getLetters()
-    return this.layoutAsCoords().map((coord, i) => Object.assign(coord, { letter: letters[i], tile: this.tiles[i] }))
+    return this.layoutAsCoords().map((coord, i) =>
+      Object.assign(coord, { letter: letters[i], tile: this.tiles[i] })
+    )
   }
 
   removeBlockAtCoord(coord) {
@@ -70,7 +95,12 @@ export default class {
     })
   }
 
-  update({ time }, cursors, { canMoveLeft, canMoveRight, canMoveDown }, createNewTetramino) {
+  update(
+    { time },
+    cursors,
+    { canMoveLeft, canMoveRight, canMoveDown },
+    createNewTetramino
+  ) {
     if (this.previousUpdate === undefined) this.previousUpdate = time.time
 
     if (time.time > this.previousUpdate + this.updateDelay) {

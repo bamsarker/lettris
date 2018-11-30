@@ -17,6 +17,7 @@ export default class extends Phaser.State {
     this.load.image('bgTile', 'assets/images/bgTile.png')
     this.load.image('gameOverBg', 'assets/images/gameOverBg.png')
     this.load.image('buttonBg', 'assets/images/buttonBg.png')
+    this.load.image('arrowKeys', 'assets/images/arrowKeys.png')
   }
 
   create() {
