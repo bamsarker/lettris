@@ -15,6 +15,14 @@ export default class extends Phaser.State {
   init() { }
   preload() { }
 
+  createTitle() {
+    this.titleTiles = config.titleLayout.map(pos => this.createTile({
+      x: pos.x * 60 + 60,
+      y: pos.y * 60 + 60
+    }, pos.letter))
+    this.titleTiles.forEach(tile => tile.scale.set(0.45))
+  }
+
   createTile(pos, letter) {
     const tile = new Tile({
       game: this.game,
@@ -49,6 +57,8 @@ export default class extends Phaser.State {
     this.placedTetraminoes = []
     this.wordResults = []
 
+    this.createTitle()
+
     this.cursors = game.input.keyboard.createCursorKeys()
 
     this.points = new Points({
@@ -58,15 +68,6 @@ export default class extends Phaser.State {
       asset: 'tile'
     })
     this.game.add.existing(this.points)
-
-    let banner = this.add.text(180, 80, 'LETTRIS', {
-      font: '80px Cabin',
-      fill: '#77BFA3',
-      smoothed: false
-    })
-
-    banner.padding.set(10, 16)
-    banner.anchor.setTo(0.5)
 
     this.grid = new Grid({
       createBackgroundTile: this.createBackgroundTile.bind(this)

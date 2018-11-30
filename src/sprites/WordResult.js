@@ -3,7 +3,7 @@ import config from '../config'
 
 export default class extends Phaser.Text {
   constructor({ game, x, y, word }) {
-    super(game, x, y, word, config.tileLetterConfig)
+    super(game, x, y, word, config.uiLetterConfig)
     this.anchor.set(0.5)
     this.scale.set(0)
     this.game = game
@@ -27,5 +27,5 @@ export default class extends Phaser.Text {
       .to({ y }, 300, Phaser.Easing.Back.InOut, true)
   }
 
-  update() {}
+  update() { }
 }
