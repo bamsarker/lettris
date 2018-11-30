@@ -51,6 +51,15 @@ export default {
     fill: '#ffffff',
     smoothed: true
   },
+  definitionLetterConfig: {
+    font: '60px Cabin',
+    fill: '#ffffff',
+    smoothed: true,
+    boundsAlignH: "center",
+    wordWrap: true,
+    wordWrapWidth: 1200,
+    align: 'center'
+  },
   grid: {
     position: {
       x: 400,

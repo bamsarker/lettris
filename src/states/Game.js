@@ -180,7 +180,7 @@ export default class extends Phaser.State {
     const wordResult = new WordResult({
       game: this.game,
       x: 195,
-      y: this.wordResults.length * 50 + 200,
+      y: this.wordResults.length * 90 + 300,
       word: word.toUpperCase(),
       asset: 'tile'
     })
