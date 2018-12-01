@@ -11,7 +11,7 @@ export default class extends Phaser.Sprite {
   }
 
   createGameOverText() {
-    this.gameOverText = this.game.add.text(0, -200, 'GAME OVER', config.tileLetterConfig)
+    this.gameOverText = this.game.add.text(0, - this.height / 6, 'GAME OVER', config.uiLetterConfig)
     this.gameOverText.anchor.set(0.5)
     this.addChild(this.gameOverText)
   }
@@ -22,11 +22,11 @@ export default class extends Phaser.Sprite {
     }
     const ogButtonScale = 0.7
 
-    this.button = this.game.add.button(0, 0, 'buttonBg', onClick)
+    this.button = this.game.add.button(0, this.height / 6, 'buttonBg', onClick)
     this.button.anchor.set(0.5)
     this.button.scale.set(ogButtonScale)
     
-    this.buttonText = this.game.add.text(this.button.x, this.button.y, 'PLAY AGAIN', config.tileLetterConfig)
+    this.buttonText = this.game.add.text(0, 0, 'PLAY AGAIN', config.uiLetterConfig)
     this.buttonText.anchor.set(0.5)
     this.button.addChild(this.buttonText)
     
