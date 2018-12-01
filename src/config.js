@@ -1,5 +1,5 @@
 export default {
-  gameWidth: 1200,
+  gameWidth: 1100,
   gameHeight: 800,
   localStorageName: 'lettris',
   webfonts: ['Cabin:700'],
@@ -66,10 +66,10 @@ export default {
       y: 50
     },
     tileSize: {
-      width: 36,
-      height: 36
+      width: 41,
+      height: 41
     },
-    width: 10,
-    height: 20
+    width: 9,
+    height: 18
   }
 }
