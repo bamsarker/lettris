@@ -7,7 +7,7 @@ import Grid, { checkForWords, emptyGrid } from '../classes/Grid'
 import lang from '../lang'
 import Tetramino from '../sprites/Tetramino'
 import { randomTIndex } from '../tetraminoes'
-import { range, delay } from '../utils'
+import { range, delay, flat } from '../utils'
 import config from '../config'
 import Points from '../sprites/Points';
 import BackgroundFXTile from '../sprites/BackgroundFXTile';
@@ -222,11 +222,11 @@ export default class extends Phaser.State {
   }
 
   checkForGameOver() {
-    const allTileCoords = this.placedTetraminoes
+    const allTileCoords = flat(this.placedTetraminoes
       .map(t => {
         return t.layoutAsCoords()
       })
-      .flat()
+    )
       .filter(coord => coord.y === 0)
 
     if (allTileCoords.length > 0) {

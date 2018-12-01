@@ -12,3 +12,5 @@ export const delay = (time) => new Promise((resolve) => setTimeout(resolve, time
 
 export const randomXPos = () => Math.floor(Math.random() * config.gameWidth)
 export const randomYPos = () => Math.floor(Math.random() * config.gameHeight)
+
+export const flat = arr => arr.reduce((acc, val) => acc.concat(val), [])

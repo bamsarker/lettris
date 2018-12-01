@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import config from '../config'
-import { range } from '../utils'
+import { range, flat } from '../utils'
 import { wordList } from '../../assets/js/words'
 
 export const coordToPosition = coord => {
@@ -25,7 +25,7 @@ export const emptyGrid = () => {
 }
 
 export const checkForRows = placedTetraminoes => {
-  let coords = [...placedTetraminoes.map(t => t.layoutAsCoords())].flat()
+  let coords = flat([...placedTetraminoes.map(t => t.layoutAsCoords())])
   const coordsToRemove = []
   range(config.grid.height)
     .map(i => i + 1)
@@ -41,9 +41,10 @@ export const checkForRows = placedTetraminoes => {
 export const checkForWords = (placedTetraminoes, createWordResult) => {
   let grid = emptyGrid()
 
-  let coordsTilesAndLetters = placedTetraminoes
-    .map(t => t.getCoordsTilesAndLetters())
-    .flat()
+  let coordsTilesAndLetters = flat(
+    placedTetraminoes
+      .map(t => t.getCoordsTilesAndLetters())
+  )
 
   grid = grid.map(
     coord =>
@@ -60,8 +61,7 @@ export const checkForWords = (placedTetraminoes, createWordResult) => {
   )
   let linesOfLetters = rowsOfLetters.concat(columnsOfLetters)
 
-  const bigStringOfGrid = linesOfLetters
-    .flat()
+  const bigStringOfGrid = flat(linesOfLetters)
     .map(c => c.letter)
     .join('')
     .toLowerCase()
