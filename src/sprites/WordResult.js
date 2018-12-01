@@ -8,7 +8,7 @@ export default class extends Phaser.Text {
     this.scale.set(0)
     this.game = game
     this.getDefinition(word)
-      .then(response => this.showDefinition(response))
+      .then(response => this.showDefinition(this.limitDefinitionLength(response)))
   }
 
   // remove() {
@@ -17,11 +17,15 @@ export default class extends Phaser.Text {
   //   this.removalTween.onComplete.add(() => this.destroy())
   // }
 
+  limitDefinitionLength(string) {
+    return string.length < 110 ? string : string.substring(0, 109) + '...'
+  }
+
   getDefinition(word) {
     return fetch(`https://googledictionaryapi.eu-gb.mybluemix.net/?define=${word}`)
       .then(res => res.json())
       .then(res => {
-        return Object.values(res.meaning)[0][0].definition
+        return Object.values(res.meaning)[0][0].definition || ''
       })
   }
 
