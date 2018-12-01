@@ -10,7 +10,7 @@ export default class extends Phaser.Sprite {
     this.letter.scale.set(0.85)
     this.addChild(this.letter)
     this.anchor.set(0.5)
-    this.scale.set(0.275)
+    this.scale.set(0.31)
     this.alpha = alpha || 1
     this.game = game
     this.letterValue = letter
@@ -65,7 +65,7 @@ export default class extends Phaser.Sprite {
     return new Promise(resolve =>
       this.game.add
         .tween(this.scale)
-        .to({ x: 0.275, y: 0.275 }, 200, Phaser.Easing.Back.Out, true)
+        .to({ x: 0.31, y: 0.31 }, 200, Phaser.Easing.Back.Out, true)
         .onComplete.add(resolve)
     )
   }
