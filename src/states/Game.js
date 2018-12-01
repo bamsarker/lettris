@@ -22,6 +22,11 @@ export default class extends Phaser.State {
       y: pos.y * 60 + 60
     }, pos.letter))
     this.titleTiles.forEach(tile => tile.scale.set(0.45))
+
+    const titlePulseLoop = () => {
+      Promise.all(this.titleTiles.map((tile, i) => delay(i * 50).then(() => tile.pulse()))).then(() => delay(3000)).then(titlePulseLoop)
+    }
+    delay(1000).then(titlePulseLoop)
   }
 
   createTile(pos, letter) {
@@ -39,7 +44,6 @@ export default class extends Phaser.State {
   }
 
   createBackgroundTile(pos, i) {
-    console.log(i, i % 2)
     const tile = new Tile({
       game: this.game,
       x: pos.x,
@@ -97,24 +101,25 @@ export default class extends Phaser.State {
 
     this.points = new Points({
       game: this.game,
-      x: 195,
-      y: config.gameHeight - 100,
+      x: config.gameWidth - 185,
+      y: 100,
       asset: 'tile'
     })
     this.game.add.existing(this.points)
 
-    let arrowImg = this.add.sprite(config.gameWidth - 380, config.gameHeight - 230, 'arrowKeys')
+    let arrowImg = this.add.sprite(config.gameWidth - 320, config.gameHeight - 230, 'arrowKeys')
     arrowImg.scale.set(0.8)
 
     this.grid = new Grid({
       createBackgroundTile: this.createBackgroundTile.bind(this)
     })
 
+    const shapeIndex = randomTIndex()
     this.activeTetramino = new Tetramino({
-      x: 5,
-      y: 1,
+      x: Math.floor(config.grid.width / 2),
+      y: shapeIndex === 4 ? 2 : 1,
       createTile: this.createTile.bind(this),
-      shapeIndex: randomTIndex()
+      shapeIndex
     })
     this.activeTetramino.enter()
   }
@@ -180,7 +185,7 @@ export default class extends Phaser.State {
     const wordResult = new WordResult({
       game: this.game,
       x: 195,
-      y: this.wordResults.length * 90 + 300,
+      y: 250,
       word: word.toUpperCase(),
       asset: 'tile'
     })
@@ -193,7 +198,7 @@ export default class extends Phaser.State {
     }
 
     this.wordResults.forEach((wr, i) => {
-      wr.dropTo(i * 50 + 200)
+      wr.dropTo((i * 100)+ 250)
     })
   }
 
@@ -203,15 +208,16 @@ export default class extends Phaser.State {
     this.activeTetramino = undefined
     currentlyActive.pulse()
       .then(() => {
+        this.checkForWordsAndRows()
+        if (this.checkForGameOver()) return
+        const shapeIndex = randomTIndex()
         this.activeTetramino = new Tetramino({
-          x: 5,
-          y: 1,
+          x: Math.floor(config.grid.width / 2),
+          y: shapeIndex === 4 ? 2 : 1,
           createTile: this.createTile.bind(this),
-          shapeIndex: randomTIndex()
+          shapeIndex
         })
         this.activeTetramino.enter()
-        this.checkForWordsAndRows()
-        this.checkForGameOver()
       })
   }
 
@@ -224,16 +230,17 @@ export default class extends Phaser.State {
       .filter(coord => coord.y === 0)
 
     if (allTileCoords.length > 0) {
-      console.log('GAME OVER')
       this.gameOver()
+      return true
     }
+    return false
   }
 
   gameOver() {
     this.gameOverMessage = new GameOver({
       game: this.game,
-      x: config.gameWidth - 230,
-      y: config.gameHeight / 2,
+      x: config.gameWidth - 180,
+      y: (config.gameHeight / 2) - 50,
       asset: 'gameOverBg'
     })
     this.gameOverMessage.enter()
