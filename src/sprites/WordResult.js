@@ -25,7 +25,7 @@ export default class extends Phaser.Text {
     return fetch(`https://googledictionaryapi.eu-gb.mybluemix.net/?define=${word}`)
       .then(res => res.json())
       .then(res => {
-        return Object.values(res.meaning)[0][0].definition || ''
+        return Object.values(Array.isArray(res) ? res[0].meaning : res.meaning)[0][0].definition || ''
       })
   }
 
