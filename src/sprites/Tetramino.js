@@ -98,7 +98,7 @@ export default class {
   update(
     { time },
     cursors,
-    { canMoveLeft, canMoveRight, canMoveDown },
+    { canMoveLeft, canMoveRight, canMoveDown, layoutOverlapsAnything },
     createNewTetramino
   ) {
     if (this.previousUpdate === undefined) this.previousUpdate = time.time
@@ -124,6 +124,10 @@ export default class {
     if (cursors.up.justDown) {
       this.nextPose()
       this.setLayout(this.shapeIndex, this.poseIndex)
+      while(layoutOverlapsAnything(this)) {
+        this.nextPose()
+        this.setLayout(this.shapeIndex, this.poseIndex)
+      }
     }
 
     this.updateTilePositions()

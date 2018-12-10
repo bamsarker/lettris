@@ -179,6 +179,18 @@ export default class extends Phaser.State {
     )
   }
 
+  
+  tetraminoLayoutOverlapsAnything(tetramino) {
+    return (
+      tetramino.layout.filter(offset => tetramino.coord.x + offset.x < 0)
+        .length > 0 ||
+      tetramino.layout.filter(
+        offset => tetramino.coord.x + offset.x > config.grid.width - 1
+      ).length > 0 ||
+      this.tetraminoWouldOverlap(tetramino, { x: 0, y: 0 })
+    )
+  }
+
   collectPoints(word) {
     word.split('').forEach(this.points.collectLetter.bind(this.points))
   }
@@ -292,7 +304,8 @@ export default class extends Phaser.State {
       {
         canMoveDown: this.tetraminoCanMoveDown.bind(this),
         canMoveLeft: this.tetraminoCanMoveLeft.bind(this),
-        canMoveRight: this.tetraminoCanMoveRight.bind(this)
+        canMoveRight: this.tetraminoCanMoveRight.bind(this),
+        layoutOverlapsAnything: this.tetraminoLayoutOverlapsAnything.bind(this)
       },
       this.replaceActiveTetWithNewTet.bind(this)
     )
