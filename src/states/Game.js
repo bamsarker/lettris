@@ -78,6 +78,9 @@ export default class extends Phaser.State {
 
   create() {
 
+    this.music = game.sound.play('bgLoop');
+    this.music.loopFull();
+
     this.createFXTiles()
 
     let bgRect = new Phaser.Graphics(this.game)
