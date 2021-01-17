@@ -3,8 +3,7 @@ import Phaser from "phaser";
 import Tile from "../sprites/Tile";
 import WordResult from "../sprites/WordResult";
 import GameOver from "../sprites/GameOver";
-import Grid, { checkForWords, emptyGrid } from "../classes/Grid";
-import lang from "../lang";
+import Grid, { checkForWords } from "../classes/Grid";
 import Tetramino from "../sprites/Tetramino";
 import { randomTIndex } from "../tetraminoes";
 import { range, delay, flat } from "../utils";
@@ -82,9 +81,6 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.music = game.sound.play("bgLoop");
-    this.music.loopFull();
-
     this.createFXTiles();
 
     let bgRect = new Phaser.Graphics(this.game);

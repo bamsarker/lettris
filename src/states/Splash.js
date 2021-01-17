@@ -21,7 +21,6 @@ export default class extends Phaser.State {
     //
     // load your assets
     //
-    this.load.audio("bgLoop", "assets/audio/bgLoop.wav");
     this.load.image("tile", "assets/images/tile.png");
     this.load.image("bgTile", "assets/images/bgTile.png");
     this.load.image("gameOverBg", "assets/images/gameOverBg.png");
