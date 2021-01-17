@@ -23,15 +23,20 @@ export default class extends Phaser.Text {
   }
 
   getDefinition(word) {
-    return fetch(
-      `https://googledictionaryapi.eu-gb.mybluemix.net/?define=${word}`
-    )
+    return fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": "4c047d891dmsh498f9f8688b9898p139c64jsnc509f0c8b34c",
+        "x-rapidapi-host": "wordsapiv1.p.rapidapi.com",
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
-        return (
-          Object.values(Array.isArray(res) ? res[0].meaning : res.meaning)[0][0]
-            .definition || ""
-        );
+        try {
+          return res.results[0].definition;
+        } catch (error) {
+          return "";
+        }
       });
   }
 
