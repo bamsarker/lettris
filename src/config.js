@@ -1,75 +1,75 @@
 export default {
   gameWidth: 1100,
   gameHeight: 800,
-  localStorageName: 'lettris',
-  webfonts: ['Cabin:700'],
-  backgroundColor: 0x273f64,
+  localStorageName: "lettris",
+  webfonts: ["Cabin:700"],
+  backgroundColor: 0x127475,
   titleLayout: [
     {
       x: 0,
       y: 0,
-      letter: 'L'
+      letter: "L",
     },
     {
       x: 1,
       y: 0,
-      letter: 'E'
+      letter: "E",
     },
     {
       x: 2,
       y: 0,
-      letter: 'T'
+      letter: "T",
     },
     {
       x: 2,
       y: 1,
-      letter: 'T'
+      letter: "T",
     },
     {
       x: 3,
       y: 1,
-      letter: 'R'
+      letter: "R",
     },
     {
       x: 4,
       y: 1,
-      letter: 'I'
+      letter: "I",
     },
     {
       x: 4,
       y: 2,
-      letter: 'S'
-    }
+      letter: "S",
+    },
   ],
   tileLetterConfig: {
-    font: '100px Cabin',
-    fill: '#644e27',
-    smoothed: true
+    font: "100px Cabin",
+    fill: "#644e27",
+    smoothed: true,
   },
   uiLetterConfig: {
-    font: '100px Cabin',
-    fill: '#ffffff',
-    smoothed: true
+    font: "100px Cabin",
+    fill: "#ffffff",
+    smoothed: true,
   },
   definitionLetterConfig: {
-    font: '60px Cabin',
-    fill: '#ffffff',
+    font: "60px Cabin",
+    fill: "#ffffff",
     smoothed: true,
     boundsAlignH: "center",
     wordWrap: true,
     wordWrapWidth: 1200,
-    align: 'center'
+    align: "center",
   },
   grid: {
     position: {
       x: 400,
-      y: 50
+      y: 50,
     },
     tileSize: {
       width: 41,
-      height: 41
+      height: 41,
     },
     width: 9,
-    height: 18
-  }
-}
+    height: 18,
+  },
+};

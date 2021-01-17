@@ -1,12 +1,13 @@
 {
-    "short_name": "MyPhaserGame",
-    "name": "PhaserES6Webpack",
-    "start_url": "./index.html",
-    "display": "standalone",
-    "theme_color": "#ffffff",
-    "background_color": "#000000",
-    "description": "Welcome to Phaser + ES6 + Webpack!.",
-    "icons": [{
+  "short_name": "MyPhaserGame",
+  "name": "PhaserES6Webpack",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#000000",
+  "description": "Welcome to Phaser + ES6 + Webpack!.",
+  "icons": [
+    {
       "src": "assets/images/mushroom2.png",
       "sizes": "48x48",
       "type": "image/png"
@@ -20,5 +21,6 @@
       "src": "assets/images/icon-512px.png",
       "sizes": "512x512",
       "type": "image/png"
-    }]
-  }
+    }
+  ]
+}
