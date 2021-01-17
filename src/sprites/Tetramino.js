@@ -67,6 +67,18 @@ export default class {
     this.layout = this.layout.filter((l) => !l.destroyed);
   }
 
+  moveTileAtCoordDown(tileCoord) {
+    const coordIndex = this.layoutAsCoords().findIndex(
+      (coord) => coord.x === tileCoord.x && coord.y === tileCoord.y
+    );
+
+    const localCoord = this.layout[coordIndex];
+
+    localCoord.y += 1;
+
+    this.updateTilePositions();
+  }
+
   layoutAsCoords() {
     return this.layout.map((offset) => {
       return {

@@ -225,8 +225,8 @@ export default class extends Phaser.State {
     this.placedTetraminoes.push(this.activeTetramino);
     const currentlyActive = this.activeTetramino;
     this.activeTetramino = undefined;
-    currentlyActive.pulse().then(() => {
-      this.checkForWordsAndRows();
+    currentlyActive.pulse().then(async () => {
+      await this.checkForWordsAndRows();
       if (this.checkForGameOver()) return;
       const shapeIndex = randomTIndex();
       this.activeTetramino = new Tetramino({
@@ -264,15 +264,40 @@ export default class extends Phaser.State {
     this.game.add.existing(this.gameOverMessage);
   }
 
-  checkForWordsAndRows() {
+  async checkForWordsAndRows() {
     const coordsToRemove = checkForWords(
       this.placedTetraminoes,
       this.createWordResult.bind(this)
     );
 
-    coordsToRemove.forEach((c, i) => {
-      this.removeBlockAtCoord(c, i * 50);
+    // remove tiles
+    await Promise.all(
+      coordsToRemove.map((c, i) => {
+        return this.removeBlockAtCoord(c, i * 50);
+      })
+    );
+
+    await delay(150);
+
+    // move tiles down above these coords
+    coordsToRemove.forEach((c) => {
+      this.placedTetraminoes.forEach((t) => {
+        const tileCoords = t.layoutAsCoords();
+
+        const tileCoordsInColumn = tileCoords.filter(
+          (tileCoord) => tileCoord.x === c.x && tileCoord.y < c.y
+        );
+
+        tileCoordsInColumn.forEach((tileCoord) => {
+          t.moveTileAtCoordDown(tileCoord);
+        });
+      });
     });
+
+    await delay(150);
+
+    if (coordsToRemove.length > 0) return this.checkForWordsAndRows();
+    else return Promise.resolve();
   }
 
   tetIncludesCoord(tet, coord) {
@@ -282,14 +307,12 @@ export default class extends Phaser.State {
       .includes(JSON.stringify(coord));
   }
 
-  removeBlockAtCoord(coord, removalDelay) {
-    this.placedTetraminoes
-      .filter((t) => this.tetIncludesCoord(t, coord))
-      .forEach((t) => {
-        delay(
-          removalDelay == undefined ? this.randomDelay() : removalDelay
-        ).then(() => t.removeBlockAtCoord(coord));
-      });
+  removeBlockAtCoord(coord, removalDelay = this.randomDelay()) {
+    return Promise.all(
+      this.placedTetraminoes
+        .filter((t) => this.tetIncludesCoord(t, coord))
+        .map((t) => delay(removalDelay).then(() => t.removeBlockAtCoord(coord)))
+    );
   }
 
   randomDelay() {

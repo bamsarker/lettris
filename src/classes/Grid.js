@@ -81,7 +81,6 @@ export const checkForWords = (placedTetraminoes, createWordResult) => {
     const found = allFoundWords.find((w) => joined.includes(w));
     if (!found) return;
 
-    console.log(found);
     createWordResult(found);
 
     const index = joined.indexOf(found);
