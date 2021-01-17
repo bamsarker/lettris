@@ -26,7 +26,7 @@ export default class extends Phaser.Text {
     return fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`, {
       method: "GET",
       headers: {
-        "x-rapidapi-key": "4c047d891dmsh498f9f8688b9898p139c64jsnc509f0c8b34c",
+        "x-rapidapi-key": process.env.RAPID_API_KEY,
         "x-rapidapi-host": "wordsapiv1.p.rapidapi.com",
       },
     })

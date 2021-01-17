@@ -9,3 +9,5 @@ dist/
 build/
 package-lock.json
 assets/.DS_Store
+.DS_Store
+.env

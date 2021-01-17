@@ -2,6 +2,7 @@ var path = require("path");
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
+var Dotenv = require("dotenv-webpack");
 
 // Phaser webpack config
 var phaserModule = path.join(__dirname, "/node_modules/phaser-ce/");
@@ -27,6 +28,9 @@ module.exports = {
   },
   watch: true,
   plugins: [
+    new Dotenv({
+      path: "./.env", // Path to .env file (this is the default)
+    }),
     definePlugin,
     new webpack.optimize.CommonsChunkPlugin({
       name: "vendor" /* chunkName= */,
