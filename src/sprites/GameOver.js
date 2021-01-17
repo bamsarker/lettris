@@ -72,6 +72,4 @@ export default class extends Phaser.Sprite {
       .tween(this.scale)
       .to({ x: 0.5, y: 0.5 }, 500, Phaser.Easing.Back.Out, true);
   }
-
-  update() {}
 }

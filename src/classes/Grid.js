@@ -101,6 +101,4 @@ export default class {
       });
     });
   }
-
-  update() {}
 }

@@ -63,6 +63,8 @@ export default class extends Phaser.State {
 
     this.game.add.existing(tile);
 
+    tile.cacheAsBitmap = true;
+
     return tile;
   }
 

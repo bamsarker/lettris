@@ -19,6 +19,4 @@ export default class extends Phaser.Text {
     this.total += letterToPoint(letter);
     this.updateDisplay();
   }
-
-  update() {}
 }

@@ -62,6 +62,4 @@ export default class extends Phaser.Text {
       .tween(this)
       .to({ y }, 300, Phaser.Easing.Back.InOut, true);
   }
-
-  update() {}
 }

@@ -69,6 +69,4 @@ export default class extends Phaser.Sprite {
         .onComplete.add(resolve)
     );
   }
-
-  update() {}
 }

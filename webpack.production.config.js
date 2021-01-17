@@ -4,6 +4,7 @@ var CleanWebpackPlugin = require("clean-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var WorkboxPlugin = require("workbox-webpack-plugin");
+var Dotenv = require("dotenv-webpack");
 
 // Phaser webpack config
 var phaserModule = path.join(__dirname, "/node_modules/phaser-ce/");
@@ -26,6 +27,9 @@ module.exports = {
     filename: "js/bundle.js",
   },
   plugins: [
+    new Dotenv({
+      path: "./.env", // Path to .env file (this is the default)
+    }),
     definePlugin,
     new CleanWebpackPlugin(["build"]),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
