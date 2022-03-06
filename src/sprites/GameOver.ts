@@ -1,7 +1,10 @@
-import Phaser from "phaser";
 import config from "../config";
 
 export default class extends Phaser.Sprite {
+  private gameOverText: Phaser.Text;
+  private button: Phaser.Button;
+  private buttonText: Phaser.Text;
+
   constructor({ game, x, y, asset }) {
     super(game, x, y, asset);
     this.game = game;

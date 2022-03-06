@@ -1,4 +1,4 @@
-const config = {
+const config: { shapes: { poses: [number, number][][] }[] } = {
   shapes: [
     {
       poses: [
@@ -199,8 +199,10 @@ const config = {
   ],
 };
 
-export default { shapes: config.shapes };
+export default config;
 
-export const arrayToCoord = (array) => ({ x: array[0], y: array[1] });
-export const randomTIndex = () =>
+export const tupleToCoord = (
+  array: [number, number]
+): { x: number; y: number } => ({ x: array[0], y: array[1] });
+export const randomTIndex = (): number =>
   Math.floor(Math.random() * config.shapes.length);

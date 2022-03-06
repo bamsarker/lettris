@@ -1,7 +1,11 @@
-import Phaser from "phaser";
 import { centerGameObjects } from "../utils";
 
 export default class extends Phaser.State {
+  public static key = "Splash";
+  public static onCreate = new Phaser.Signal();
+  private loaderBg: Phaser.Sprite;
+  private loaderBar: Phaser.Sprite;
+
   init() {}
 
   preload() {
@@ -21,11 +25,10 @@ export default class extends Phaser.State {
     //
     // load your assets
     //
-    this.load.image("tile", "assets/images/tile.png");
-    this.load.image("bgTile", "assets/images/bgTile.png");
-    this.load.image("gameOverBg", "assets/images/gameOverBg.png");
-    this.load.image("buttonBg", "assets/images/buttonBg.png");
-    this.load.image("arrowKeys", "assets/images/arrowKeys.png");
+    this.load.image("tile", "/images/tile.png");
+    this.load.image("bgTile", "/images/bgTile.png");
+    this.load.image("gameOverBg", "/images/gameOverBg.png");
+    this.load.image("buttonBg", "/images/buttonBg.png");
   }
 
   create() {

@@ -1,17 +1,21 @@
-import Phaser from "phaser";
 import config from "../config";
 import { range, flat } from "../utils";
-import { wordList } from "../../assets/js/words";
+import { wordList } from "../data/words";
+import Tetramino from "/sprites/Tetramino";
+import Tile from "/sprites/Tile";
 
-export const coordToPosition = (coord) => {
+export const coordToPosition = (coord: {
+  x: number;
+  y: number;
+}): { x: number; y: number } => {
   return {
     x: coord.x * config.grid.tileSize.width + config.grid.position.x,
     y: coord.y * config.grid.tileSize.height + config.grid.position.y,
   };
 };
 
-export const emptyGrid = () => {
-  const grid = [];
+export const emptyGrid = (): { x: number; y: number; letter: " " }[] => {
+  const grid: { x: number; y: number; letter: " " }[] = [];
   range(config.grid.height).forEach((y) => {
     range(config.grid.width).forEach((x) => {
       grid.push({
@@ -38,14 +42,21 @@ export const checkForRows = (placedTetraminoes) => {
   return coordsToRemove;
 };
 
-export const checkForWords = (placedTetraminoes, createWordResult) => {
-  let grid = emptyGrid();
+export const checkForWords = (
+  placedTetraminoes: Tetramino[],
+  createWordResult: (word: string) => void
+) => {
+  const coordsTilesAndLetters = flat<
+    ({
+      x: number;
+      y: number;
+    } & {
+      letter: string;
+      tile: Tile;
+    })[]
+  >(placedTetraminoes.map((t) => t.getCoordsTilesAndLetters()));
 
-  let coordsTilesAndLetters = flat(
-    placedTetraminoes.map((t) => t.getCoordsTilesAndLetters())
-  );
-
-  grid = grid.map(
+  const grid = emptyGrid().map(
     (coord) =>
       coordsTilesAndLetters.find(
         (obj) => obj.x === coord.x && obj.y === coord.y

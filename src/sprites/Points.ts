@@ -1,8 +1,9 @@
-import Phaser from "phaser";
 import config from "../config";
 import { letterToPoint } from "../letters";
 
 export default class extends Phaser.Text {
+  private total: number;
+
   constructor({ game, x, y }) {
     super(game, x, y, "SCORE: 0", config.uiLetterConfig);
     this.anchor.set(0.5);

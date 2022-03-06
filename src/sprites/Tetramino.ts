@@ -1,11 +1,18 @@
-import Phaser from "phaser";
-import config from "../config";
-import tetraminoes, { arrayToCoord } from "../tetraminoes";
+import tetraminoes, { tupleToCoord } from "../tetraminoes";
 import { coordToPosition } from "../classes/Grid";
 import { randomLetter } from "../letters";
 import { delay } from "../utils";
+import Tile from "./Tile";
 
 export default class {
+  private coord: { x: number; y: number };
+  private shapeIndex: number;
+  private poseIndex: number;
+  private tiles: Tile[];
+  private layout: { x: number; y: number; destroyed: boolean }[];
+  private updateDelay: number;
+  private previousUpdate: number;
+
   constructor({ x, y, createTile, shapeIndex }) {
     this.coord = { x, y };
     this.shapeIndex = shapeIndex;
@@ -89,7 +96,9 @@ export default class {
   }
 
   setLayout(index, poseIndex) {
-    this.layout = tetraminoes.shapes[index].poses[poseIndex].map(arrayToCoord);
+    this.layout = tetraminoes.shapes[index].poses[poseIndex]
+      .map(tupleToCoord)
+      .map((coord) => ({ ...coord, destroyed: false }));
   }
 
   nextPose() {

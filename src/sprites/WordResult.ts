@@ -1,7 +1,10 @@
-import Phaser from "phaser";
 import config from "../config";
 
 export default class extends Phaser.Text {
+  private definitionText: Phaser.Text;
+  private enterTween: Phaser.Tween;
+  private moveTween: Phaser.Tween;
+
   constructor({ game, x, y, word }) {
     super(game, x, y, word, config.uiLetterConfig);
     this.anchor.set(0.5);
@@ -22,22 +25,22 @@ export default class extends Phaser.Text {
     return string.length < 110 ? string : string.substring(0, 109) + "...";
   }
 
-  getDefinition(word) {
-    return fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`, {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": process.env.RAPID_API_KEY,
-        "x-rapidapi-host": "wordsapiv1.p.rapidapi.com",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        try {
-          return res.results[0].definition;
-        } catch (error) {
-          return "";
-        }
-      });
+  async getDefinition(word) {
+    const { results } = await fetch(
+      `https://wordsapiv1.p.rapidapi.com/words/${word}`,
+      {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": process.env.RAPID_API_KEY,
+          "x-rapidapi-host": "wordsapiv1.p.rapidapi.com",
+        },
+      }
+    ).then((res) => res.json());
+    try {
+      return results[0].definition;
+    } catch (error) {
+      return "";
+    }
   }
 
   showDefinition(def) {

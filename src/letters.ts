@@ -1,4 +1,32 @@
-export const lettersWithQuantities = {
+type Letter =
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | "F"
+  | "G"
+  | "H"
+  | "I"
+  | "J"
+  | "K"
+  | "L"
+  | "M"
+  | "N"
+  | "O"
+  | "P"
+  | "Q"
+  | "R"
+  | "S"
+  | "T"
+  | "U"
+  | "V"
+  | "W"
+  | "X"
+  | "Y"
+  | "Z";
+
+export const lettersWithQuantities: { [key in Letter]: number } = {
   A: 9,
   B: 2,
   C: 2,
@@ -27,7 +55,7 @@ export const lettersWithQuantities = {
   Z: 1,
 };
 
-export const letterPoints = {
+export const letterPoints: { [key in Letter]: number } = {
   A: 1,
   B: 3,
   C: 3,
@@ -56,14 +84,15 @@ export const letterPoints = {
   Z: 10,
 };
 
-export const letterToPoint = (letter) => letterPoints[letter.toUpperCase()];
+export const letterToPoint = (letter: Letter): number =>
+  letterPoints[letter.toUpperCase()];
 
 export const letters = Object.keys(lettersWithQuantities);
 
-export const distributedLetters = letters.reduce((arr, letter) => {
+export const distributedLetters: Letter[] = letters.reduce((arr, letter) => {
   arr = [...arr, ...Array(lettersWithQuantities[letter]).fill(letter)];
   return arr;
 }, []);
 
-export const randomLetter = () =>
+export const randomLetter = (): Letter =>
   distributedLetters[Math.floor(Math.random() * distributedLetters.length)];

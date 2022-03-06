@@ -1,8 +1,8 @@
-import Phaser from "phaser";
-import config from "../config";
 import { randomXPos, randomYPos } from "../utils";
 
 export default class extends Phaser.Sprite {
+  private rotationSpeed: number;
+
   constructor({ game, x, y }) {
     super(game, x, y, "tile");
 

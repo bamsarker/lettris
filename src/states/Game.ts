@@ -1,5 +1,4 @@
 /* globals __DEV__ */
-import Phaser from "phaser";
 import Tile from "../sprites/Tile";
 import WordResult from "../sprites/WordResult";
 import GameOver from "../sprites/GameOver";
@@ -10,31 +9,25 @@ import { range, delay, flat } from "../utils";
 import config from "../config";
 import Points from "../sprites/Points";
 import BackgroundFXTile from "../sprites/BackgroundFXTile";
+import Title from "/classes/Title";
 
 export default class extends Phaser.State {
+  public static key = "Game";
+  public static onCreate = new Phaser.Signal();
+  placedTetraminoes: Tetramino[];
+  wordResults: WordResult[];
+  cursors: Phaser.CursorKeys;
+  points: Points;
+  grid: Grid;
+  activeTetramino: Tetramino;
+  gameOverMessage: GameOver;
+  private title: Title;
+
   init() {}
   preload() {}
 
   createTitle() {
-    this.titleTiles = config.titleLayout.map((pos) =>
-      this.createTile(
-        {
-          x: pos.x * 60 + 60,
-          y: pos.y * 60 + 60,
-        },
-        pos.letter
-      )
-    );
-    this.titleTiles.forEach((tile) => tile.scale.set(0.45));
-
-    const titlePulseLoop = () => {
-      Promise.all(
-        this.titleTiles.map((tile, i) => delay(i * 50).then(() => tile.pulse()))
-      )
-        .then(() => delay(3000))
-        .then(titlePulseLoop);
-    };
-    delay(1000).then(titlePulseLoop);
+    this.title = new Title(this.game);
   }
 
   createTile(pos, letter) {
@@ -102,22 +95,14 @@ export default class extends Phaser.State {
 
     this.createTitle();
 
-    this.cursors = game.input.keyboard.createCursorKeys();
+    this.cursors = this.game.input.keyboard.createCursorKeys();
 
     this.points = new Points({
       game: this.game,
-      x: config.gameWidth - 185,
-      y: 100,
-      asset: "tile",
+      x: 400,
+      y: 25,
     });
     this.game.add.existing(this.points);
-
-    let arrowImg = this.add.sprite(
-      config.gameWidth - 320,
-      config.gameHeight - 230,
-      "arrowKeys"
-    );
-    arrowImg.scale.set(0.8);
 
     this.grid = new Grid({
       createBackgroundTile: this.createBackgroundTile.bind(this),
@@ -205,10 +190,9 @@ export default class extends Phaser.State {
     this.collectPoints(word);
     const wordResult = new WordResult({
       game: this.game,
-      x: 195,
-      y: 250,
+      x: 450,
+      y: 50,
       word: word.toUpperCase(),
-      asset: "tile",
     });
     wordResult.enter();
     this.game.add.existing(wordResult);
@@ -219,7 +203,7 @@ export default class extends Phaser.State {
     }
 
     this.wordResults.forEach((wr, i) => {
-      wr.dropTo(i * 100 + 250);
+      wr.dropTo(i * 100 + 100);
     });
   }
 

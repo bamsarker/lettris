@@ -1,5 +1,5 @@
 export default {
-  gameWidth: 1100,
+  gameWidth: 550,
   gameHeight: 800,
   localStorageName: "lettris",
   webfonts: ["Cabin:700"],
@@ -42,12 +42,12 @@ export default {
     },
   ],
   tileLetterConfig: {
-    font: "100px Cabin",
+    font: "105px Cabin",
     fill: "#644e27",
     smoothed: true,
   },
   uiLetterConfig: {
-    font: "100px Cabin",
+    font: "60px Cabin",
     fill: "#ffffff",
     smoothed: true,
   },
@@ -57,17 +57,17 @@ export default {
     smoothed: true,
     boundsAlignH: "center",
     wordWrap: true,
-    wordWrapWidth: 1200,
+    wordWrapWidth: 900,
     align: "center",
   },
   grid: {
     position: {
-      x: 400,
-      y: 50,
+      x: 30,
+      y: 140,
     },
     tileSize: {
-      width: 41,
-      height: 41,
+      width: 37,
+      height: 37,
     },
     width: 9,
     height: 18,
