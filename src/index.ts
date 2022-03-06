@@ -39,8 +39,6 @@ async function startGameAsync() {
         parent: document.querySelector<HTMLDivElement>("#content"),
         width: lettrisConfig.gameWidth,
         height: lettrisConfig.gameHeight,
-        alignH: true,
-        alignV: true,
         antialias: true,
         resolution: 1,
         maxPointers: 1,
