@@ -22,7 +22,10 @@ export default class extends Phaser.Text {
   // }
 
   limitDefinitionLength(string) {
-    return string.length < 110 ? string : string.substring(0, 109) + "...";
+    const maxLength = 100;
+    return string.length < maxLength
+      ? string
+      : string.substring(0, maxLength - 1) + "...";
   }
 
   async getDefinition(word) {

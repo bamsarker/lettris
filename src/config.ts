@@ -1,6 +1,6 @@
 export default {
   gameWidth: 550,
-  gameHeight: 800,
+  gameHeight: 950,
   localStorageName: "lettris",
   webfonts: ["Cabin:700"],
   backgroundColor: 0x127475,
@@ -57,13 +57,13 @@ export default {
     smoothed: true,
     boundsAlignH: "center",
     wordWrap: true,
-    wordWrapWidth: 900,
+    wordWrapWidth: 750,
     align: "center",
   },
   grid: {
     position: {
       x: 30,
-      y: 140,
+      y: 200,
     },
     tileSize: {
       width: 37,

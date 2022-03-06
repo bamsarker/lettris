@@ -11,13 +11,13 @@ export default class {
       this.createTile(
         game,
         {
-          x: pos.x * 30 + 20,
-          y: pos.y * 30 + 25,
+          x: pos.x * 50 + 30,
+          y: pos.y * 50 + 35,
         },
         pos.letter
       )
     );
-    this.titleTiles.forEach((tile) => tile.scale.set(0.23));
+    this.titleTiles.forEach((tile) => tile.scale.set(0.38));
 
     const titlePulseLoop = () => {
       Promise.all(

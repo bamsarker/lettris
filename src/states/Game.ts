@@ -205,7 +205,7 @@ export default class extends Phaser.State {
     this.collectPoints(word);
     const wordResult = new WordResult({
       game: this.game,
-      x: 450,
+      x: 445,
       y: 50,
       word: word.toUpperCase(),
     });

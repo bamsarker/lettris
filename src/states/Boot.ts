@@ -30,8 +30,8 @@ export default class extends Phaser.State {
     );
     text.anchor.setTo(0.5, 0.5);
 
-    this.load.image("loaderBg", "/images/loader-bg.png");
-    this.load.image("loaderBar", "/images/loader-bar.png");
+    this.load.image("loaderBg", "./images/loader-bg.png");
+    this.load.image("loaderBar", "./images/loader-bar.png");
   }
 
   render() {
