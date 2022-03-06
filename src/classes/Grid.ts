@@ -69,20 +69,17 @@ export const checkForWords = (
   const columnsOfLetters = range(config.grid.width).map((x) =>
     grid.filter((c) => c.x === x)
   );
-  let linesOfLetters = rowsOfLetters.concat(columnsOfLetters);
+  const linesOfLetters = rowsOfLetters.concat(columnsOfLetters);
 
   const bigStringOfGrid = flat(linesOfLetters)
     .map((c) => c.letter)
     .join("")
     .toLowerCase();
-  const allFoundWords = wordList
-    .filter((w) => bigStringOfGrid.includes(w))
-    .sort((a, b) => {
-      return b.length - a.length;
-    });
-  const coordsToRemove = [];
+  const allFoundWords = wordList.filter((w) => bigStringOfGrid.includes(w));
 
-  if (allFoundWords.length === 0) return coordsToRemove;
+  if (allFoundWords.length === 0) return [];
+
+  const coordsToRemove = [];
 
   linesOfLetters.forEach((line) => {
     const joined = line
@@ -104,6 +101,19 @@ export const checkForWords = (
   return coordsToRemove;
 };
 
+export const worldXToGridX = (worldX: number): number => {
+  const normalised = worldX - config.grid.tileSize.width;
+
+  const gridX = Math.floor(
+    (normalised / (config.grid.width * config.grid.tileSize.width)) *
+      config.grid.width
+  );
+
+  if (gridX < 0) return 0;
+  if (gridX > config.grid.width) return config.grid.width;
+
+  return gridX;
+};
 export default class {
   constructor({ createBackgroundTile }) {
     range(config.grid.width).map((x) => {

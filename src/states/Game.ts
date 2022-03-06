@@ -108,18 +108,30 @@ export default class extends Phaser.State {
       createBackgroundTile: this.createBackgroundTile.bind(this),
     });
 
-    const shapeIndex = randomTIndex();
-    this.activeTetramino = new Tetramino({
-      x: Math.floor(config.grid.width / 2),
-      y: shapeIndex === 4 ? 2 : 1,
-      createTile: this.createTile.bind(this),
-      shapeIndex,
-    });
+    this.activeTetramino = this.createNewTetramino();
     this.activeTetramino.enter();
   }
 
-  coordOverlapsWithAnyOtherTet(tets) {
-    return (coord) =>
+  createNewTetramino() {
+    const shapeIndex = randomTIndex();
+    return new Tetramino(
+      {
+        x: Math.floor(config.grid.width / 2),
+        y: shapeIndex === 4 ? 2 : 1,
+        createTile: this.createTile.bind(this),
+        shapeIndex,
+      },
+      {
+        canMoveDown: this.tetraminoCanMoveDown.bind(this),
+        canMoveLeft: this.tetraminoCanMoveLeft.bind(this),
+        canMoveRight: this.tetraminoCanMoveRight.bind(this),
+        layoutOverlapsAnything: this.tetraminoLayoutOverlapsAnything.bind(this),
+      }
+    );
+  }
+
+  coordOverlapsWithAnyOtherTet(tets: Tetramino[]) {
+    return (coord: { x: number; y: number }) =>
       tets.filter(
         (tet) =>
           tet.layout.filter(
@@ -129,7 +141,7 @@ export default class extends Phaser.State {
       ).length > 0;
   }
 
-  tetraminoIsAtTheBottom(tetramino) {
+  tetraminoIsAtTheBottom(tetramino: Tetramino) {
     return (
       tetramino
         .layoutAsCoords()
@@ -137,7 +149,10 @@ export default class extends Phaser.State {
     );
   }
 
-  tetraminoWouldOverlap(tetramino, offset) {
+  tetraminoWouldOverlap(
+    tetramino: Tetramino,
+    offset: { x: number; y: number }
+  ) {
     return (
       tetramino.layout
         .map((coord) => ({
@@ -149,14 +164,14 @@ export default class extends Phaser.State {
     );
   }
 
-  tetraminoCanMoveLeft(tetramino) {
+  tetraminoCanMoveLeft(tetramino: Tetramino) {
     return (
       tetramino.layout.filter((offset) => tetramino.coord.x + offset.x <= 0)
         .length === 0 && !this.tetraminoWouldOverlap(tetramino, { x: -1, y: 0 })
     );
   }
 
-  tetraminoCanMoveRight(tetramino) {
+  tetraminoCanMoveRight(tetramino: Tetramino) {
     return (
       tetramino.layout.filter(
         (offset) => tetramino.coord.x + offset.x >= config.grid.width - 1
@@ -164,14 +179,14 @@ export default class extends Phaser.State {
     );
   }
 
-  tetraminoCanMoveDown(tetramino) {
+  tetraminoCanMoveDown(tetramino: Tetramino) {
     return !(
       this.tetraminoIsAtTheBottom(tetramino) ||
       this.tetraminoWouldOverlap(tetramino, { x: 0, y: 1 })
     );
   }
 
-  tetraminoLayoutOverlapsAnything(tetramino) {
+  tetraminoLayoutOverlapsAnything(tetramino: Tetramino) {
     return (
       tetramino.layout.filter((offset) => tetramino.coord.x + offset.x < 0)
         .length > 0 ||
@@ -182,11 +197,11 @@ export default class extends Phaser.State {
     );
   }
 
-  collectPoints(word) {
+  collectPoints(word: string) {
     word.split("").forEach(this.points.collectLetter.bind(this.points));
   }
 
-  createWordResult(word) {
+  createWordResult(word: string) {
     this.collectPoints(word);
     const wordResult = new WordResult({
       game: this.game,
@@ -207,20 +222,15 @@ export default class extends Phaser.State {
     });
   }
 
-  replaceActiveTetWithNewTet(previousTetramino) {
+  replaceActiveTetWithNewTet() {
     this.placedTetraminoes.push(this.activeTetramino);
     const currentlyActive = this.activeTetramino;
+    currentlyActive.clearHandlers();
     this.activeTetramino = undefined;
     currentlyActive.pulse().then(async () => {
       await this.checkForWordsAndRows();
       if (this.checkForGameOver()) return;
-      const shapeIndex = randomTIndex();
-      this.activeTetramino = new Tetramino({
-        x: Math.floor(config.grid.width / 2),
-        y: shapeIndex === 4 ? 2 : 1,
-        createTile: this.createTile.bind(this),
-        shapeIndex,
-      });
+      this.activeTetramino = this.createNewTetramino();
       this.activeTetramino.enter();
     });
   }
@@ -312,12 +322,6 @@ export default class extends Phaser.State {
     this.activeTetramino.update(
       game,
       this.cursors,
-      {
-        canMoveDown: this.tetraminoCanMoveDown.bind(this),
-        canMoveLeft: this.tetraminoCanMoveLeft.bind(this),
-        canMoveRight: this.tetraminoCanMoveRight.bind(this),
-        layoutOverlapsAnything: this.tetraminoLayoutOverlapsAnything.bind(this),
-      },
       this.replaceActiveTetWithNewTet.bind(this)
     );
   }

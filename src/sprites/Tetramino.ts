@@ -1,19 +1,29 @@
 import tetraminoes, { tupleToCoord } from "../tetraminoes";
-import { coordToPosition } from "../classes/Grid";
+import { coordToPosition, worldXToGridX } from "../classes/Grid";
 import { randomLetter } from "../letters";
 import { delay } from "../utils";
 import Tile from "./Tile";
+import { Input } from "phaser-ce";
+import config from "/config";
 
-export default class {
-  private coord: { x: number; y: number };
+export default class Tetramino {
+  public coord: { x: number; y: number };
   private shapeIndex: number;
   private poseIndex: number;
   private tiles: Tile[];
-  private layout: { x: number; y: number; destroyed: boolean }[];
+  public layout: { x: number; y: number; destroyed: boolean }[];
   private updateDelay: number;
   private previousUpdate: number;
+  canMoveLeft: (tet: Tetramino) => boolean;
+  canMoveRight: (tet: Tetramino) => boolean;
+  canMoveDown: (tet: Tetramino) => boolean;
+  layoutOverlapsAnything: (tet: Tetramino) => boolean;
+  startY: number;
 
-  constructor({ x, y, createTile, shapeIndex }) {
+  constructor(
+    { x, y, createTile, shapeIndex },
+    { canMoveLeft, canMoveRight, canMoveDown, layoutOverlapsAnything }
+  ) {
     this.coord = { x, y };
     this.shapeIndex = shapeIndex;
     this.poseIndex = 0;
@@ -28,7 +38,54 @@ export default class {
       });
     this.updateDelay = 1000;
     this.previousUpdate = undefined;
+
+    this.canMoveLeft = canMoveLeft;
+    this.canMoveRight = canMoveRight;
+    this.canMoveDown = canMoveDown;
+    this.layoutOverlapsAnything = layoutOverlapsAnything;
+
+    GameInstance.input.addMoveCallback(this.handlePointerMove, this);
+    GameInstance.input.onTap.add(this.handlePointerTap);
+
+    GameInstance.input.onDown.add(this.handlePointerDown);
+    GameInstance.input.onUp.add(this.handlePointerUp);
   }
+
+  handlePointerTap = () => {
+    const endY = GameInstance.input.worldY;
+    if (endY - this.startY > 50) return;
+
+    this.handleUp();
+  };
+
+  handlePointerUp = () => {
+    const endY = GameInstance.input.worldY;
+
+    if (endY - this.startY > 50 && this.canMoveDown(this)) {
+      for (let index = 0; index < config.grid.height; index++) {
+        this.handleDown();
+      }
+    }
+  };
+
+  handlePointerDown = () => {
+    this.startY = GameInstance.input.worldY;
+  };
+
+  handlePointerMove = (pointer: Phaser.Pointer) => {
+    if (pointer.isDown) {
+      const newX = worldXToGridX(pointer.worldX);
+      if (newX > this.coord.x) {
+        while (this.canMoveRight(this) && newX > this.coord.x) {
+          this.handleRight();
+        }
+      } else if (newX < this.coord.x) {
+        while (this.canMoveLeft(this) && newX < this.coord.x) {
+          this.handleLeft();
+        }
+      }
+    }
+  };
 
   pulse() {
     return Promise.all(
@@ -63,7 +120,7 @@ export default class {
     );
   }
 
-  removeBlockAtCoord(coord) {
+  removeBlockAtCoord(coord: { x: number; y: number }) {
     this.layoutAsCoords().forEach((c, i) => {
       if (c.x !== coord.x || c.y !== coord.y) return;
       this.tiles[i].remove();
@@ -74,7 +131,7 @@ export default class {
     this.layout = this.layout.filter((l) => !l.destroyed);
   }
 
-  moveTileAtCoordDown(tileCoord) {
+  moveTileAtCoordDown(tileCoord: { x: number; y: number }) {
     const coordIndex = this.layoutAsCoords().findIndex(
       (coord) => coord.x === tileCoord.x && coord.y === tileCoord.y
     );
@@ -86,7 +143,7 @@ export default class {
     this.updateTilePositions();
   }
 
-  layoutAsCoords() {
+  layoutAsCoords(): { x: number; y: number }[] {
     return this.layout.map((offset) => {
       return {
         x: this.coord.x + offset.x,
@@ -95,7 +152,7 @@ export default class {
     });
   }
 
-  setLayout(index, poseIndex) {
+  setLayout(index: number, poseIndex: number) {
     this.layout = tetraminoes.shapes[index].poses[poseIndex]
       .map(tupleToCoord)
       .map((coord) => ({ ...coord, destroyed: false }));
@@ -116,41 +173,64 @@ export default class {
     });
   }
 
-  update(
-    { time },
-    cursors,
-    { canMoveLeft, canMoveRight, canMoveDown, layoutOverlapsAnything },
-    createNewTetramino
-  ) {
+  handleLeft() {
+    if (!this.canMoveLeft(this)) return;
+
+    this.coord.x -= 1;
+  }
+
+  handleRight() {
+    if (!this.canMoveRight(this)) return;
+
+    this.coord.x += 1;
+  }
+
+  handleUp() {
+    this.nextPose();
+    this.setLayout(this.shapeIndex, this.poseIndex);
+    while (this.layoutOverlapsAnything(this)) {
+      this.nextPose();
+      this.setLayout(this.shapeIndex, this.poseIndex);
+    }
+  }
+
+  handleDown() {
+    if (!this.canMoveDown(this)) return;
+
+    this.coord.y += 1;
+  }
+
+  update({ time }, cursors: Phaser.CursorKeys, createNewTetramino: () => void) {
     if (this.previousUpdate === undefined) this.previousUpdate = time.time;
 
     if (time.time > this.previousUpdate + this.updateDelay) {
-      if (canMoveDown(this)) {
+      if (this.canMoveDown(this)) {
         this.coord.y += 1;
         this.previousUpdate = time.time;
       } else {
-        createNewTetramino(this);
+        createNewTetramino();
       }
     }
 
-    if (cursors.left.justDown && canMoveLeft(this)) {
-      this.coord.x -= 1;
-    } else if (cursors.right.justDown && canMoveRight(this)) {
-      this.coord.x += 1;
+    if (cursors.left.justDown) {
+      this.handleLeft();
+    } else if (cursors.right.justDown) {
+      this.handleRight();
     }
-    if (cursors.down.isDown && canMoveDown(this)) {
-      this.coord.y += 1;
+    if (cursors.down.isDown) {
+      this.handleDown();
     }
 
     if (cursors.up.justDown) {
-      this.nextPose();
-      this.setLayout(this.shapeIndex, this.poseIndex);
-      while (layoutOverlapsAnything(this)) {
-        this.nextPose();
-        this.setLayout(this.shapeIndex, this.poseIndex);
-      }
+      this.handleUp();
     }
 
     this.updateTilePositions();
   }
+
+  clearHandlers = () => {
+    GameInstance.input.onDown.remove(this.handlePointerDown);
+    GameInstance.input.onUp.remove(this.handlePointerUp);
+    GameInstance.input.onTap.remove(this.handlePointerTap);
+  };
 }
