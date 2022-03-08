@@ -19,6 +19,8 @@ export default class Tetramino {
   canMoveDown: (tet: Tetramino) => boolean;
   layoutOverlapsAnything: (tet: Tetramino) => boolean;
   startY: number;
+  startX: number;
+  swipeDiff: number = 40;
 
   constructor(
     { x, y, createTile, shapeIndex },
@@ -53,37 +55,45 @@ export default class Tetramino {
 
   handlePointerTap = () => {
     const endY = GameInstance.input.worldY;
-    if (endY - this.startY > 50) return;
+    if (this.startY !== null && endY - this.startY > this.swipeDiff) return;
+    const endX = GameInstance.input.worldY;
+    if (this.startX !== null && endX - this.startX > this.swipeDiff) return;
 
-    this.handleUp();
+    this.changePose();
+    this.startY = null;
+    this.startX = null;
   };
 
   handlePointerUp = () => {
-    const endY = GameInstance.input.worldY;
-
-    if (endY - this.startY > 50 && this.canMoveDown(this)) {
-      for (let index = 0; index < config.grid.height; index++) {
-        this.handleDown();
-      }
-    }
+    this.startY = null;
+    this.startX = null;
   };
 
   handlePointerDown = () => {
     this.startY = GameInstance.input.worldY;
+    this.startX = GameInstance.input.worldX;
   };
 
   handlePointerMove = (pointer: Phaser.Pointer) => {
-    if (pointer.isDown) {
-      const newX = worldXToGridX(pointer.worldX);
-      if (newX > this.coord.x) {
-        while (this.canMoveRight(this) && newX > this.coord.x) {
-          this.handleRight();
-        }
-      } else if (newX < this.coord.x) {
-        while (this.canMoveLeft(this) && newX < this.coord.x) {
-          this.handleLeft();
-        }
-      }
+    if (!pointer.isDown) return;
+
+    const newX = pointer.worldX;
+    const diffX = newX - (this.startX || pointer.worldX);
+
+    if (diffX > this.swipeDiff) {
+      this.handleRight();
+      this.startX = newX;
+    } else if (diffX < -this.swipeDiff) {
+      this.handleLeft();
+      this.startX = newX;
+    }
+
+    const endY = GameInstance.input.worldY;
+    const diffY = endY - (this.startY || pointer.worldY);
+
+    if (diffY > this.swipeDiff / 2 && this.canMoveDown(this)) {
+      this.handleDown();
+      this.startY = endY;
     }
   };
 
@@ -185,7 +195,7 @@ export default class Tetramino {
     this.coord.x += 1;
   }
 
-  handleUp() {
+  changePose() {
     this.nextPose();
     this.setLayout(this.shapeIndex, this.poseIndex);
     while (this.layoutOverlapsAnything(this)) {
@@ -222,7 +232,7 @@ export default class Tetramino {
     }
 
     if (cursors.up.justDown) {
-      this.handleUp();
+      this.changePose();
     }
 
     this.updateTilePositions();
